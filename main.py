@@ -1,8 +1,13 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import RedirectResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 import random
 import string
 import sqlite3
+import os
+BASE_URL = os.getenv("BASE_URL", "http://127.0.0.1:8080")
+
 
 # Database setup FIRST
 conn = sqlite3.connect("urls.db", check_same_thread=False)
@@ -22,8 +27,8 @@ def generate_short_code():
     return ''.join(random.choice(characters) for _ in range(6))
 
 @app.get("/")
-def read_root():
-    return {"message": "URL Shortener is running"}
+def home():
+    return FileResponse("index.html")
 
 @app.post("/shorten")
 def shorten_url(url: str):
@@ -37,9 +42,10 @@ def shorten_url(url: str):
         short_code = generate_short_code()
         cursor.execute("INSERT INTO urls VALUES (?, ?)", (short_code, url))
         conn.commit()
+    
     return {
         "short_code": short_code,
-        "short_url": f"http://127.0.0.1:8000/{short_code}"
+        "short_url": f"{BASE_URL}/{short_code}"
     }
 
 @app.get("/{short_code}")

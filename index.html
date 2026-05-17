@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>URL Shortener</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 100px auto;
+            text-align: center;
+        }
+        input {
+            width: 80%;
+            padding: 10px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background: black;
+            color: white;
+            border: none;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <h1>URL Shortener</h1>
+    <input type="text" id="urlInput" placeholder="Paste your long URL here" />
+    <br><br>
+    <button onclick="shortenURL()">Shorten</button>
+    <div id="result"></div>
+
+    <script>
+        async function shortenURL() {
+            const url = document.getElementById("urlInput").value;
+            const response = await fetch(`/shorten?url=${encodeURIComponent(url)}`, {
+                method: "POST"
+            });
+            const data = await response.json();
+            document.getElementById("result").innerHTML = 
+                `Short URL: <a href="${data.short_url}" target="_blank" rel="noopener noreferrer">${data.short_url}</a>
+`;
+        }
+    </script>
+</body>
+</html>
