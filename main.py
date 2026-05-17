@@ -48,6 +48,12 @@ def shorten_url(url: str):
         "short_url": f"{BASE_URL}/{short_code}"
     }
 
+@app.get("/admin/urls")
+def get_all_urls():
+    cursor.execute("SELECT * FROM urls")
+    results = cursor.fetchall()
+    return {"urls": results}
+
 @app.get("/{short_code}")
 def redirect_to_original(short_code: str):
     
